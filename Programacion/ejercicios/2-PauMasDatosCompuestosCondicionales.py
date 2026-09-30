@@ -306,11 +306,36 @@ print("mensaje:", mensaje)
 
 
 
+#Ejercicio 11. 
+print("")
+print("Solución del ejercicio 11")
+
+i = 5
+
+i = i + 1
+print(i) #6
+
+i += 1
+print(i) #7
 
 
 
 
+#Ejercicio 12. 
 
+
+print("")
+print("Solución del ejercicio 12")
+
+nombres = ["Frodo", "Bilbo", "Gandalf"]
+edades = [24, 22, 25]
+
+for nombre, edad in zip(nombres, edades):
+    print(nombre, edad)
+
+
+for posicion, nombre in enumerate(nombres):
+    print(posicion, nombre)
 
 
 
