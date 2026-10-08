@@ -1,0 +1,7 @@
+Pasos
+1. Instalar virtual vox
+2. Configurar los pasos por el video:  https://youtu.be/mvKhGy56bTI
+3. Los archivos a cargar estan en la carpeta Synology es necesario descarlos y hacerlos localmente
+ademas descompactar el .zip
+4. Consejos el video es muy rápido, disminuir velocidad y estar atento a los mensajes escritos en la parte inferior,
+    guardar las credenciales de usuario y password al igual que la dirección IP de conexión
