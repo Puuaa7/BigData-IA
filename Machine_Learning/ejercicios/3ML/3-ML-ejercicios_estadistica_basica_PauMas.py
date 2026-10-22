@@ -73,3 +73,66 @@ print("Cantidad de datos:", len(puntos))
 # Cada fila representa a un alumno y sus datos.
 
 
+
+print("")
+print("3. Python funcional")
+print("===================")
+
+# Utilizamos la variable ruta que ya hemos creado
+# en los ejercicios anteriores.
+
+# Abrimos el CSV y guardamos sus filas en una lista
+with open(ruta, "r", encoding="utf-8") as archivo:
+    filas = list(csv.DictReader(archivo))
+
+# Mostramos las primeras 5 filas
+print(filas[:5])
+
+# Extraemos los puntos de cada alumno usando map y lambda
+puntos = list(map(lambda fila: fila["puntos_prueba"], filas))
+
+# Mostramos cuántas puntuaciones tenemos
+print("Cantidad de datos:", len(puntos))
+
+# Cada fila del CSV representa a un alumno y sus datos.
+
+
+print("")
+print("Ejercicio 2. Media")
+
+# - Calcula la media de puntos_prueba con el Método 1: bucle for, acumulador y len().
+
+# - Calcula la misma media con el Método 2: sum(), len() y, si quieres practicarlo, map() con lambda.
+
+# - Calcula la misma media con el Método 3: pandas usando .mean().
+
+# - Muestra los tres resultados con nombres claros: media_bucle, media_funciones y media_pandas.
+
+# - Comprueba que los tres resultados coinciden.
+
+# - Explica qué significa esa media en el contexto de la prueba.
+
+# Pandas que puedes usar: df["puntos_prueba"].mean().
+
+puntos = []
+
+# Recorremos las filas y guardamos cada puntuación
+for fila in filas:
+    puntos.append(int(fila["puntos_prueba"]))
+
+# Calculamos la media con el Método 1: bucle for, acumulador y len().
+suma = 0
+for valor in puntos:
+    suma += valor
+
+media_bucle = suma / len(puntos)
+
+print("media_bucle:", media_bucle)
+
+# De promedio, cada alumno sacó 74 puntos: si se repartieran todos los puntos por igual, a cada uno le tocarían 74.
+
+
+
+
+print("")
+print("Ejercicio 3. Mediana")
