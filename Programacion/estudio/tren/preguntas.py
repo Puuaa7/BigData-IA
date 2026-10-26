@@ -508,6 +508,215 @@ q("out", "print(max(map(lambda v: abs(v - 74), [50, 60, 100])))", ["26", "24", "
        "100": "max se aplica a las distancias, no a los valores originales."})
 
 
+# ---------------------------------------------------------------------
+examen("bucles2", "Bucles II: while, anidados y textos", "Tema 3")
+# ---------------------------------------------------------------------
+q("out", "saldo = 10\nwhile saldo > 0:\n    saldo -= 4\n    print(saldo)",
+  ["6\n2\n-2", "6\n2", "10\n6\n2", "6\n2\n-2\n-6"], 0,
+  "La condición se mira al principio de cada vuelta: con 2 todavía entra, resta y imprime -2.",
+  por={"6\n2": "Con saldo = 2, 2 > 0 es True: entra otra vez, resta 4 e imprime -2.",
+       "10\n6\n2": "Se resta ANTES de imprimir: el 10 nunca se imprime.",
+       "6\n2\n-2\n-6": "Con -2, -2 > 0 es False y el bucle termina."})
+q("out", "n = 1\nveces = 0\nwhile n < 100:\n    n *= 3\n    veces += 1\nprint(n, veces)",
+  ["243 5", "81 4", "243 6", "100 5"], 0,
+  "n vale 3, 9, 27, 81 y 243: cinco vueltas. Con 243 la condición ya es False.",
+  por={"81 4": "81 < 100 sigue siendo True: hay una vuelta más que lo multiplica por 3.",
+       "243 6": "Son 5 multiplicaciones: 3, 9, 27, 81, 243.",
+       "100 5": "n no se queda en 100: se multiplica por 3 y luego se comprueba."})
+q("out", 'intentos = ["x", "y", "ok", "z"]\ni = 0\nwhile intentos[i] != "ok":\n    i += 1\nprint(i)',
+  ["2", "3", "1", "Error"], 0,
+  "Avanza mientras no encuentre \"ok\", que está en la posición 2.",
+  por={"3": "Se cuenta desde 0: x 0, y 1, ok 2.",
+       "1": "En la posición 1 está \"y\", que no es \"ok\": sigue avanzando.",
+       "Error": "Para al encontrar \"ok\", antes de salirse de la lista."})
+q("out", 'for i in range(1, 4):\n    print("*" * i)',
+  ["*\n**\n***", "***\n**\n*", "*\n*\n*", "*\n**\n***\n****"], 0,
+  '"*" * i repite el asterisco i veces, con i = 1, 2 y 3.',
+  por={"***\n**\n*": "i va de 1 a 3 en orden creciente.",
+       "*\n*\n*": '"*" * i repite el texto i veces, no siempre una.',
+       "*\n**\n***\n****": "range(1, 4) no incluye el 4."})
+q("out", "for i in range(1, 3):\n    for j in range(1, 3):\n        print(i * j)",
+  ["1\n2\n2\n4", "1\n4", "1\n2\n3\n4", "2\n4"], 0,
+  "Por cada i, j hace todas sus vueltas: (1,1) (1,2) (2,1) (2,2).",
+  por={"1\n4": "El bucle de dentro se hace completo para cada i: son 4 combinaciones.",
+       "1\n2\n3\n4": "Se imprime i * j, no un contador.",
+       "2\n4": "range(1, 3) empieza en 1, así que también está i = 1."})
+q("out", "m = [[1, 2], [3, 4]]\nfor fila in m:\n    print(sum(fila))",
+  ["3\n7", "4\n6", "10", "1\n2\n3\n4"], 0,
+  "Cada fila es una lista: [1, 2] suma 3 y [3, 4] suma 7.",
+  por={"4\n6": "Eso sería sumar columnas. Aquí se recorre fila a fila.",
+       "10": "El print está dentro del bucle: imprime una suma por fila.",
+       "1\n2\n3\n4": "sum(fila) suma la fila entera de una vez."})
+q("out", 'palabra = "programa"\nvocales = 0\nfor letra in palabra:\n    if letra in "aeiou":\n        vocales += 1\nprint(vocales)',
+  ["3", "4", "8", "2"], 0,
+  "Recorrer un texto va letra a letra: o, a, a son las vocales.",
+  por={"4": "p-r-o-g-r-a-m-a: las vocales son o, a, a.",
+       "8": "8 es len(palabra). Aquí solo se cuentan vocales.",
+       "2": "La a aparece dos veces y cuentan las dos."})
+q("out", 'texto = "hola"\ninv = ""\nfor c in texto:\n    inv = c + inv\nprint(inv)',
+  ["aloh", "hola", "h", "a"], 0,
+  "c + inv pone cada letra DELANTE de lo que había: el texto queda al revés.",
+  por={"hola": "Sería así con inv + c. Con c + inv cada letra va delante.",
+       "h": "inv va acumulando todas las letras.",
+       "a": "inv va acumulando todas las letras, no solo la última."})
+q("out", "for i in range(3):\n    for j in range(3):\n        if j == 1:\n            break\n        print(i, j)",
+  ["0 0\n1 0\n2 0", "0 0", "0 0\n0 1\n1 0\n1 1\n2 0\n2 1", "0 0\n1 0\n2 0\n3 0"], 0,
+  "break solo sale del bucle de DENTRO. El de fuera sigue con la siguiente i.",
+  por={"0 0": "break solo rompe el bucle interior; el exterior continúa.",
+       "0 0\n0 1\n1 0\n1 1\n2 0\n2 1": "Con j == 1 hace break ANTES de imprimir.",
+       "0 0\n1 0\n2 0\n3 0": "range(3) es 0, 1 y 2."})
+q("out", "n = 5\nwhile n > 0:\n    n //= 2\nprint(n)", ["0", "1", "2", "-1"], 0,
+  "5 // 2 = 2, 2 // 2 = 1, 1 // 2 = 0. Con 0 el bucle termina.",
+  por={"1": "1 > 0 es True: hay otra vuelta y 1 // 2 da 0.",
+       "2": "2 > 0 es True: sigue dividiendo.",
+       "-1": "1 // 2 da 0, no -1."})
+q("err", "total = 0\nfor n in [1, 2, 3]:\ntotal += n", ["IndentationError", "SyntaxError", "NameError", "Ningún error"], 0,
+  "El cuerpo del for tiene que ir indentado.")
+q("out", 'alumnos = {"Ana": [5, 7], "Luis": [3, 4]}\nfor nombre, notas in alumnos.items():\n    print(nombre, sum(notas) / len(notas))',
+  ["Ana 6.0\nLuis 3.5", "Ana 12\nLuis 7", "Ana 6\nLuis 3.5", "6.0\n3.5"], 0,
+  "Cada valor del diccionario es una lista de notas, y se calcula su media.",
+  por={"Ana 12\nLuis 7": "Falta dividir entre len(notas).",
+       "Ana 6\nLuis 3.5": "/ siempre da float: 6.0.",
+       "6.0\n3.5": "El print incluye también el nombre."})
+
+# ---------------------------------------------------------------------
+examen("funciones3", "Funciones III: escribir y seguir", "Tema 4")
+# ---------------------------------------------------------------------
+q("fill", "def es_par(n):\n    return n % 2 ___ 0\n\nprint(es_par(4), es_par(7))", ["==", "=", "!=", ">"], 0,
+  "Una función que dice True/False puede devolver directamente la comparación.", expect="True False",
+  por={"=": "= asigna. Dentro de return hay que comparar con ==.",
+       "!=": "Invierte el resultado: sería es_impar.",
+       ">": "n % 2 > 0 es True para los impares: sería es_impar."})
+q("fill", "def area(base, altura=___):\n    return base * altura / 2\n\nprint(area(4), area(4, 10))", ["2", "1", "0", "None"], 0,
+  "area(4) usa el valor por defecto: 4 * 2 / 2 = 4.0.", expect="4.0 20.0",
+  por={"1": "Con altura 1, area(4) da 2.0, no 4.0.",
+       "0": "Con altura 0 el área sería 0.0.",
+       "None": "4 * None da error."})
+q("out", "def contar(l, valor):\n    c = 0\n    for x in l:\n        if x == valor:\n            c += 1\n    return c\n\nprint(contar([1, 2, 1, 1], 1))",
+  ["3", "1", "4", "2"], 0,
+  "El return está FUERA del for: primero recorre toda la lista y luego devuelve.",
+  por={"1": "El return va después del bucle, así que cuenta todos los 1.",
+       "4": "Solo cuenta los que son iguales a 1.",
+       "2": "Hay tres 1 en la lista."})
+q("out", "def contar(l, valor):\n    c = 0\n    for x in l:\n        if x == valor:\n            c += 1\n        return c\n\nprint(contar([1, 2, 1, 1], 1))",
+  ["1", "3", "0", "None"], 0,
+  "Error típico: el return está DENTRO del for, así que la función termina en la primera vuelta.",
+  por={"3": "Fíjate en la sangría: return está dentro del for y acaba en la primera vuelta.",
+       "0": "La primera x ya es 1, así que c vale 1 cuando llega al return.",
+       "None": "Sí hay return (aunque esté mal colocado)."})
+q("out", 'def f(x):\n    if x > 0:\n        return "pos"\n\nprint(f(5), f(-1))',
+  ["pos None", "pos neg", "pos", "pos False"], 0,
+  "Si x no es > 0, la función acaba sin pasar por ningún return y devuelve None.",
+  por={"pos neg": 'No hay ningún return "neg". Sin return se devuelve None.',
+       "pos": "Se imprimen dos valores, uno por cada llamada.",
+       "pos False": "Sin return no devuelve False: devuelve None."})
+q("out", "def aplicar(f, x):\n    return f(x)\n\nprint(aplicar(lambda n: n * 3, 4))", ["12", "7", "4", "Error"], 0,
+  "Las funciones se pueden pasar como argumento: aplicar llama a la lambda con 4.",
+  por={"7": "La lambda multiplica (n * 3), no suma.",
+       "4": "aplicar no devuelve x: devuelve f(x).",
+       "Error": "En Python las funciones son objetos y se pueden pasar como argumento."})
+q("out", "def potencia(b, e):\n    if e == 0:\n        return 1\n    return b * potencia(b, e - 1)\n\nprint(potencia(2, 3))", ["8", "6", "9", "1"], 0,
+  "2 * potencia(2, 2) = 2 * 2 * potencia(2, 1) = 2 * 2 * 2 * 1 = 8.",
+  por={"6": "Es 2 · 2 · 2, no 2 · 3.",
+       "9": "Eso sería 3 ** 2. Aquí la base es 2 y el exponente 3.",
+       "1": "1 es el caso base, pero cada llamada lo multiplica por b."})
+q("out", "def cuenta(n):\n    if n == 0:\n        return\n    print(n)\n    cuenta(n - 1)\n\ncuenta(3)", ["3\n2\n1", "1\n2\n3", "3\n2\n1\n0", "3"], 0,
+  "Imprime y después se llama con n - 1. Con 0 para sin imprimir.",
+  por={"1\n2\n3": "Imprime ANTES de llamarse, así que va de mayor a menor.",
+       "3\n2\n1\n0": "Con n == 0 hace return antes del print.",
+       "3": "Se vuelve a llamar con n - 1 hasta llegar a 0."})
+q("out", "def media(*n):\n    return sum(n) / len(n)\n\nprint(media(4, 6, 8))", ["6.0", "18", "6", "Error"], 0,
+  "*n recoge (4, 6, 8) en una tupla: 18 / 3.",
+  por={"18": "18 es la suma; falta dividir entre len(n).",
+       "6": "/ siempre da float: 6.0.",
+       "Error": "sum y len funcionan con tuplas."})
+q("out", 'def info(nombre, **extra):\n    print(nombre, len(extra))\n\ninfo("Pau", edad=24, curso="IA")', ["Pau 2", "Pau 3", "Pau", "Error"], 0,
+  "nombre recoge \"Pau\" y **extra recoge solo los argumentos con nombre que sobran: edad y curso.",
+  por={"Pau 3": "nombre no entra en **extra: extra solo tiene edad y curso.",
+       "Pau": "El print también muestra len(extra).",
+       "Error": "**extra recoge los argumentos con nombre que no tienen parámetro propio."})
+q("out", "def mm(l):\n    return min(l), max(l)\n\nmn, mx = mm([3, 8, 1])\nprint(mx - mn)", ["7", "-7", "(1, 8)", "Error"], 0,
+  "Se desempaqueta la tupla: mn = 1, mx = 8.",
+  por={"-7": "Se calcula mx - mn = 8 - 1.",
+       "(1, 8)": "La tupla se desempaqueta en mn y mx; se imprime la resta.",
+       "Error": "Una tupla de 2 se puede desempaquetar en 2 variables."})
+q("mc", q="¿Qué devuelve una función que termina con return a, b?",
+  opts=["Una tupla (a, b)", "Solo a", "Una lista [a, b]", "Da error"], a=0,
+  exp="Varios valores separados por comas forman una tupla.",
+  por={"Solo a": "Devuelve los dos valores juntos.",
+       "Una lista [a, b]": "Es una tupla, con paréntesis, no una lista.",
+       "Da error": "Devolver varios valores es válido en Python."})
+q("out", "total = 0\ndef sumar(x):\n    return total + x\n\nprint(sumar(5))", ["5", "Error", "0", "None"], 0,
+  "Una función puede LEER una variable de fuera. Lo que no conviene es modificarla desde dentro.",
+  por={"Error": "Leer una variable global desde una función sí está permitido.",
+       "0": "Devuelve total + x = 0 + 5.",
+       "None": "Sí hay return."})
+
+# ---------------------------------------------------------------------
+examen("simulacro2", "Simulacro 2: completa el código", "Todos")
+# ---------------------------------------------------------------------
+q("fill", "notas = [7, 3, 9]\naprobadas = [n for n in notas ___ n >= 5]\nprint(aprobadas)", ["if", "for", "and", "while"], 0,
+  "En una comprensión el filtro se escribe con if al final.", expect="[7, 9]",
+  por={"for": "El filtro de una comprensión va con if.",
+       "and": "and no filtra: Python intenta calcular notas and n >= 5 y n todavía no existe.",
+       "while": "while no se puede usar dentro de una comprensión."})
+q("fill", 'd = {"ratón": 12, "monitor": 0}\nagotados = []\nfor p, u in d.items():\n    if u == 0:\n        agotados.___(p)\nprint(agotados)', ["append", "add", "insert", "push"], 0,
+  "A una lista se le añade al final con append.", expect="['monitor']",
+  por={"add": "add es de los set, no de las listas.",
+       "insert": "insert necesita dos cosas: la posición y el valor.",
+       "push": "push no existe en Python (es de JavaScript)."})
+q("fill", "precios = [10, 20, 30]\ntotal = ___\nfor p in precios:\n    total += p\nprint(total)", ["0", "[]", "None", "1"], 0,
+  "Un acumulador de sumas empieza en 0.", expect="60",
+  por={"[]": "Una lista no se puede sumar con un número.",
+       "None": "None + 10 da error.",
+       "1": "Empezar en 1 suma uno de más: 61."})
+q("fill", 'edad = 20\nprint("Mayor" ___ edad >= 18 else "Menor")', ["if", "and", "?", "elif"], 0,
+  "Ternario: valor_si_true if condición else valor_si_false.", expect="Mayor",
+  por={"and": "El ternario se escribe con if … else.",
+       "?": "En Python no existe condición ? a : b (es de otros lenguajes).",
+       "elif": "elif solo existe en un if de varias líneas."})
+q("fill", 'def saludar(nombre___):\n    return "Hola " + nombre\n\nprint(saludar())', ['="anónimo"', "=anónimo", '="Anónimo"', ': "anónimo"'], 0,
+  "Un valor por defecto se pone con = en la definición, y si es texto va entre comillas.", expect="Hola anónimo",
+  por={"=anónimo": "Sin comillas, anónimo sería una variable, y no existe.",
+       '="Anónimo"': "Funciona, pero imprime \"Anónimo\" con mayúscula, y el resultado pedido va en minúscula.",
+       ': "anónimo"': "Con : es una anotación de tipo, no un valor por defecto."})
+q("fill", "for i in range(___):\n    print(i)", ["5, 2, -1", "5, 3, -1", "3, 6", "5, 2"], 0,
+  "Hacia atrás con paso -1. El final (2) no se incluye, así que para en 3.", expect="5\n4\n3",
+  por={"5, 3, -1": "El final no se incluye: se queda en 4.",
+       "3, 6": "Eso va hacia delante: 3, 4, 5.",
+       "5, 2": "Sin paso negativo no puede ir hacia atrás: no sale nada."})
+q("fill", 'alumno = {"nombre": "Ana"}\nalumno[___] = 8.5\nprint(alumno)', ['"nota"', "nota", "0", ".nota"], 0,
+  "Las claves de texto van entre comillas dentro de los corchetes.", expect="{'nombre': 'Ana', 'nota': 8.5}",
+  por={"nota": "Sin comillas, nota sería una variable que no existe.",
+       "0": "Crearía una clave 0, no \"nota\".",
+       ".nota": "Los diccionarios no usan punto: se accede con [\"clave\"]."})
+q("fill", "n = [4, 1, 3]\no = ___(n)\nprint(n, o)", ["sorted", "n.sort", "list", "reversed"], 0,
+  "sorted devuelve una lista nueva ordenada y deja la original igual.", expect="[4, 1, 3] [1, 3, 4]",
+  por={"n.sort": "sort no recibe la lista como argumento, y además cambiaría n y devolvería None.",
+       "list": "list(n) hace una copia, pero no la ordena.",
+       "reversed": "reversed la recorre al revés, no la ordena."})
+q("fill", 'frec = {}\nfor x in "aba":\n    if x ___ frec:\n        frec[x] += 1\n    else:\n        frec[x] = 1\nprint(frec)', ["in", "not in", "==", "is"], 0,
+  "Patrón de frecuencias: si la clave ya está en el diccionario se suma, si no se crea.", expect="{'a': 2, 'b': 1}",
+  por={"not in": "Al revés: intentaría sumar a una clave que todavía no existe.",
+       "==": "Compara la letra con el diccionario entero, que nunca es igual.",
+       "is": "is no mira si está dentro: hay que usar in."})
+q("fill", "def fact(n):\n    if n ___ 1:\n        return 1\n    return n * fact(n - 1)\n\nprint(fact(5), fact(0))", ["<=", "==", ">=", "!="], 0,
+  "Con <= el caso base cubre el 1 y también el 0.", expect="120 1",
+  por={"==": "fact(0) nunca llega a 1: baja a -1, -2… y da RecursionError.",
+       ">=": "fact(5) devolvería 1 directamente, y fact(0) nunca cumple 0 >= 1: baja sin fin hasta RecursionError.",
+       "!=": "Para todo lo que no sea 1 devuelve 1 enseguida."})
+q("fill", "o = sorted([8, 2, 6, 4])\nn = len(o)\nprint((o[n // 2 - 1] + o[n // 2]) ___ 2)", ["/", "//", "*", "%"], 0,
+  "Mediana con n par: la media de los dos centrales (4 y 6).", expect="5.0",
+  por={"//": "// da entero (5). Además, con dos centrales impares perderías el .5.",
+       "*": "La media es dividir entre 2, no multiplicar.",
+       "%": "% da el resto, no la media."})
+q("fill", 'usuarios = {"ana", "luis"}\nusuarios.___("marta")\nprint(len(usuarios))', ["add", "append", "insert", "push"], 0,
+  "A un set se le añade con add.", expect="3",
+  por={"append": "append es de las listas. Los set usan add.",
+       "insert": "Los set no tienen posiciones, así que no hay insert.",
+       "push": "push no existe en Python."})
+
+
 # =====================================================================
 # Por qué fallas: explicación de cada opción incorrecta (preguntas de los temas)
 # =====================================================================
@@ -757,8 +966,9 @@ ERRORES = {
     "RecursionError": "una función se llama a sí misma sin parar",
 }
 
-ORDEN = ["tipos", "compuestos", "condicionales", "practica2", "bucles", "practica3",
-         "funciones1", "funciones2", "estadistica", "practicaml", "errores", "simulacro"]
+ORDEN = ["tipos", "compuestos", "condicionales", "practica2", "bucles", "bucles2", "practica3",
+         "funciones1", "funciones2", "funciones3", "estadistica", "practicaml", "errores",
+         "simulacro", "simulacro2"]
 EXAMENES.sort(key=lambda e: ORDEN.index(e["id"]))
 
 
