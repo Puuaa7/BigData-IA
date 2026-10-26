@@ -1,0 +1,373 @@
+<title>Python en el tren</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  /* Layout: una columna estrecha pensada para el pulgar; la portada es una línea de tren con un examen por estación */
+  :root {
+    --bg: #eef2f5;
+    --surface: #ffffff;
+    --ink: #17202b;
+    --muted: #5b6878;
+    --line: #d3dbe3;
+    --accent: #2b67b0;
+    --accent-ink: #ffffff;
+    --yellow: #f2c230;
+    --ok: #1f8a4c;
+    --ok-bg: #e3f4ea;
+    --bad: #c23b32;
+    --bad-bg: #fbe7e5;
+    --code-bg: #1d2530;
+    --code-ink: #e4e9ef;
+    --k: #7fb2f0;
+    --s: #f2c86b;
+    --n: #f29b74;
+    --b: #8fd6b4;
+    --c: #7d8b9b;
+    --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+    --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    --mono: "JetBrains Mono", Consolas, "Courier New", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #10151b; --surface: #19212b; --ink: #e8edf2; --muted: #93a1b0; --line: #2c3743;
+      --accent: #6fa3e6; --accent-ink: #0d1520; --yellow: #f2c230;
+      --ok: #5fd08f; --ok-bg: #173325; --bad: #f07b72; --bad-bg: #3a1c1a;
+      --code-bg: #0b0f14; --code-ink: #e4e9ef;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10151b; --surface: #19212b; --ink: #e8edf2; --muted: #93a1b0; --line: #2c3743;
+    --accent: #6fa3e6; --accent-ink: #0d1520; --yellow: #f2c230;
+    --ok: #5fd08f; --ok-bg: #173325; --bad: #f07b72; --bad-bg: #3a1c1a;
+    --code-bg: #0b0f14; --code-ink: #e4e9ef;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font: 16px/1.5 var(--body);
+    -webkit-tap-highlight-color: transparent;
+  }
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+  .wrap {
+    max-width: 560px; margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 20px 120px;
+  }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  /* ---------- Portada ---------- */
+  .eyebrow { font: 600 12px/1 var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  h1 { font: 800 clamp(32px, 9vw, 44px)/1.02 var(--display); margin: 8px 0 6px; letter-spacing: -.02em; text-wrap: balance; }
+  h1 .py { color: var(--accent); }
+  .sub { color: var(--muted); margin: 0 0 20px; max-width: 34ch; }
+
+  .quick { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 28px; }
+  .quick button {
+    text-align: left; border: 0; border-radius: 14px; padding: 14px;
+    display: grid; gap: 2px; min-height: 76px;
+  }
+  .quick .rnd { background: var(--accent); color: var(--accent-ink); }
+  .quick .rev { background: var(--surface); border: 1.5px solid var(--line); }
+  .quick .rev[disabled] { opacity: .55; cursor: default; }
+  .quick b { font: 700 17px/1.2 var(--display); }
+  .quick span { font-size: 13px; opacity: .85; }
+
+  .linea-tit { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .linea-tit h2 { font: 700 18px/1 var(--display); margin: 0; }
+  .linea-tit small { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+
+  .linea { list-style: none; margin: 0; padding: 0; position: relative; }
+  .linea::before {
+    content: ""; position: absolute; left: 15px; top: 26px; bottom: 26px; width: 6px;
+    background: var(--accent); border-radius: 3px; opacity: .9;
+  }
+  .estacion button {
+    width: 100%; display: grid; grid-template-columns: 36px 1fr auto; align-items: center; gap: 12px;
+    background: none; border: 0; padding: 10px 0; text-align: left;
+  }
+  .dot {
+    width: 36px; height: 36px; border-radius: 50%; position: relative; z-index: 1;
+    background: var(--surface); border: 5px solid var(--accent);
+    display: grid; place-items: center;
+  }
+  .estacion.hecha .dot { background: var(--yellow); }
+  .estacion.hecha .dot::after { content: ""; width: 9px; height: 5px; border: solid #17202b; border-width: 0 0 2.5px 2.5px; transform: translateY(-1px) rotate(-45deg); }
+  .est-txt { min-width: 0; }
+  .est-txt b { display: block; font-weight: 600; font-size: 16px; line-height: 1.25; }
+  .est-txt span { font-size: 13px; color: var(--muted); }
+  .nota {
+    font: 600 14px/1 var(--mono); font-variant-numeric: tabular-nums;
+    padding: 6px 8px; border-radius: 8px; background: var(--surface); border: 1px solid var(--line); color: var(--muted);
+  }
+  .nota.buena { color: var(--ok); border-color: currentColor; }
+  .pie { color: var(--muted); font-size: 13px; margin-top: 24px; }
+  .pie button { background: none; border: 0; padding: 0; text-decoration: underline; color: var(--muted); font-size: 13px; }
+
+  /* ---------- Examen ---------- */
+  .top {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg);
+    padding-block: 10px 12px; display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center;
+  }
+  .salir { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; font-size: 14px; }
+  .barra { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; }
+  .barra i { display: block; height: 100%; background: var(--accent); border-radius: 4px; transition: width .25s; }
+  .cuenta { font: 600 14px/1 var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  .tipo { font: 600 12px/1 var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin: 14px 0 6px; }
+  .enunciado { font: 600 19px/1.35 var(--body); margin: 0 0 12px; text-wrap: pretty; }
+  pre.code {
+    background: var(--code-bg); color: var(--code-ink); border-radius: 12px;
+    padding: 14px 16px; margin: 0 0 16px; overflow-x: auto;
+    font: 14.5px/1.55 var(--mono); tab-size: 4;
+  }
+  .tk-k { color: var(--k); } .tk-s { color: var(--s); } .tk-n { color: var(--n); } .tk-b { color: var(--b); } .tk-c { color: var(--c); font-style: italic; }
+  .hueco { background: var(--yellow); color: #17202b; border-radius: 4px; padding: 0 4px; font-weight: 600; }
+
+  .opciones { display: grid; gap: 10px; }
+  .op {
+    display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start;
+    text-align: left; background: var(--surface); border: 1.5px solid var(--line);
+    border-radius: 12px; padding: 12px; min-height: 52px;
+  }
+  .op .letra { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; font: 600 13px/1 var(--mono); background: var(--bg); color: var(--muted); }
+  .op .txt { min-width: 0; white-space: pre-wrap; word-break: break-word; padding-top: 2px; }
+  .op.mono .txt { font: 14.5px/1.45 var(--mono); }
+  .op:not([disabled]):active { transform: scale(.985); }
+  .op[disabled] { cursor: default; }
+  .op.ok { border-color: var(--ok); background: var(--ok-bg); }
+  .op.ok .letra { background: var(--ok); color: var(--surface); }
+  .op.mal { border-color: var(--bad); background: var(--bad-bg); }
+  .op.mal .letra { background: var(--bad); color: var(--surface); }
+  .op.apagada { opacity: .5; }
+
+  .explica { margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); }
+  .explica b { display: block; margin-bottom: 2px; }
+  .explica.ok b { color: var(--ok); } .explica.mal b { color: var(--bad); }
+  .explica .pq { display: block; white-space: pre-line; margin-bottom: 10px; }
+  .explica.mal b.bien-tit { color: var(--ok); }
+  .opc { font-family: var(--mono); font-size: .92em; background: var(--bg); padding: 1px 5px; border-radius: 5px; }
+
+  .accion {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 6;
+    padding-top: 12px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    background: linear-gradient(to top, var(--bg) 70%, transparent);
+  }
+  .accion button {
+    display: block; width: 100%; max-width: 560px; margin: 0 auto;
+    border: 0; border-radius: 14px; padding: 15px; font: 700 17px/1 var(--display);
+    background: var(--accent); color: var(--accent-ink);
+  }
+
+  /* ---------- Resultado ---------- */
+  .marcador { text-align: center; padding: 24px 0 8px; }
+  .marcador .grande { font: 800 72px/1 var(--display); font-variant-numeric: tabular-nums; letter-spacing: -.03em; }
+  .marcador .grande small { font-size: 32px; color: var(--muted); }
+  .marcador p { margin: 6px 0 0; color: var(--muted); }
+  .botones { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 18px 0 26px; }
+  .botones button { border-radius: 12px; padding: 13px; font-weight: 600; border: 1.5px solid var(--line); background: var(--surface); }
+  .botones button.prim { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .fallo { border-top: 1px solid var(--line); padding: 16px 0; }
+  .fallo .enunciado { font-size: 16px; margin-bottom: 8px; }
+  .fallo pre.code { font-size: 13.5px; margin-bottom: 10px; }
+  .resp { font-size: 14px; display: grid; gap: 4px; }
+  .resp code { font-family: var(--mono); white-space: pre-wrap; }
+  .resp .tu { color: var(--bad); } .resp .bien { color: var(--ok); }
+  .resp .por { color: var(--muted); }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } .op:active { transform: none !important; } }
+</style>
+
+<main class="wrap" id="app"></main>
+<div class="accion" id="accion" hidden><button id="btn-accion" type="button">Siguiente</button></div>
+
+<script>
+const EXAMENES = /*__DATOS__*/[];
+const TODAS = EXAMENES.flatMap(e => e.preguntas.map(p => ({ ...p, examen: e.titulo })));
+const POR_ID = Object.fromEntries(TODAS.map(p => [p.id, p]));
+const TIPOS = { out: "¿Qué imprime?", err: "¿Qué error da?", fill: "Completa el hueco", mc: "Teoría" };
+const LETRAS = "ABCD";
+
+/* ---- guardado (solo en este móvil) ---- */
+function leer(k, def) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch { return def; } }
+function guardar(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+let mejores = leer("tren-mejores", {});
+let fallos = new Set(leer("tren-fallos", []));
+const guardarFallos = () => guardar("tren-fallos", [...fallos]);
+
+/* ---- utilidades ---- */
+const $app = document.getElementById("app");
+const $accion = document.getElementById("accion");
+const $btn = document.getElementById("btn-accion");
+const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const opcionCorta = t => `<code class="opc">${esc(t.includes("\n") ? t.replace(/\n/g, " ⏎ ") : t)}</code>`;
+function barajar(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+const RE = /(___)|(#.*$)|("(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*')|\b(def|return|if|elif|else|for|while|in|and|or|not|break|continue|pass|lambda|match|case|True|False|None)\b|\b(print|len|range|sum|min|max|sorted|list|set|enumerate|zip|map|filter|type|int|str|float)\b|\b(\d+(?:\.\d+)?)\b/gm;
+function resaltar(code) {
+  let out = "", last = 0, m;
+  RE.lastIndex = 0;
+  while ((m = RE.exec(code))) {
+    out += esc(code.slice(last, m.index));
+    const t = esc(m[0]);
+    out += m[1] ? '<span class="hueco">___</span>'
+         : m[2] ? `<span class="tk-c">${t}</span>`
+         : m[3] ? `<span class="tk-s">${t}</span>`
+         : m[4] ? `<span class="tk-k">${t}</span>`
+         : m[5] ? `<span class="tk-b">${t}</span>`
+         : `<span class="tk-n">${t}</span>`;
+    last = m.index + m[0].length;
+  }
+  return out + esc(code.slice(last));
+}
+
+/* ---- estado del examen ---- */
+let ronda = null;   // { titulo, clave, preguntas, i, aciertos, respuestas: [] , opciones }
+
+function empezar(clave, titulo, preguntas) {
+  ronda = { clave, titulo, preguntas, i: 0, aciertos: 0, respuestas: [], opciones: null };
+  pintarPregunta();
+}
+
+function abrirExamen(id) {
+  const ex = EXAMENES.find(e => e.id === id);
+  empezar(id, ex.titulo, ex.preguntas.slice());
+}
+
+function pintarPortada() {
+  ronda = null;
+  $accion.hidden = true;
+  const hechos = EXAMENES.filter(e => (mejores[e.id] ?? -1) >= Math.ceil(e.preguntas.length * 0.8)).length;
+  $app.innerHTML = `
+    <div class="eyebrow">Examen escrito · miércoles</div>
+    <h1>Python <span class="py">en el tren</span></h1>
+    <p class="sub">Exámenes cortos de ${TODAS.length} preguntas comprobadas. Una estación queda marcada cuando sacas un 8 o más.</p>
+    <div class="quick">
+      <button class="rnd" id="b-rnd" type="button"><b>Aleatorio</b><span>10 preguntas de todo</span></button>
+      <button class="rev" id="b-rev" type="button" ${fallos.size ? "" : "disabled"}><b>Repasar fallos</b><span>${fallos.size ? fallos.size + " pendiente" + (fallos.size > 1 ? "s" : "") : "Ninguno pendiente"}</span></button>
+    </div>
+    <div class="linea-tit"><h2>Línea de exámenes</h2><small>${hechos}/${EXAMENES.length} estaciones</small></div>
+    <ol class="linea">
+      ${EXAMENES.map(e => {
+        const n = e.preguntas.length, m = mejores[e.id];
+        const hecha = (m ?? -1) >= Math.ceil(n * 0.8);
+        return `<li class="estacion ${hecha ? "hecha" : ""}"><button type="button" data-ex="${e.id}">
+          <span class="dot"></span>
+          <span class="est-txt"><b>${esc(e.titulo)}</b><span>${esc(e.tema)} · ${n} preguntas</span></span>
+          <span class="nota ${hecha ? "buena" : ""}">${m == null ? "–" : m + "/" + n}</span>
+        </button></li>`;
+      }).join("")}
+    </ol>
+    <p class="pie">El progreso se guarda solo en este navegador. <button type="button" id="b-reset">Borrar progreso</button></p>`;
+  document.getElementById("b-rnd").onclick = () => empezar("aleatorio", "Aleatorio", barajar(TODAS).slice(0, 10));
+  document.getElementById("b-rev").onclick = () => { if (fallos.size) empezar("fallos", "Repaso de fallos", barajar([...fallos].map(id => POR_ID[id]).filter(Boolean))); };
+  const reset = document.getElementById("b-reset");
+  reset.onclick = () => {
+    if (reset.dataset.seguro) { mejores = {}; fallos = new Set(); guardar("tren-mejores", mejores); guardarFallos(); pintarPortada(); }
+    else { reset.dataset.seguro = "1"; reset.textContent = "Toca otra vez para confirmar"; }
+  };
+  $app.querySelectorAll("[data-ex]").forEach(b => b.onclick = () => abrirExamen(b.dataset.ex));
+  window.scrollTo(0, 0);
+}
+
+function pintarPregunta() {
+  const r = ronda, p = r.preguntas[r.i];
+  r.opciones = barajar(p.opts.map((txt, idx) => ({ txt, ok: idx === p.a })));
+  const mono = p.t !== "mc";
+  $accion.hidden = true;
+  $app.innerHTML = `
+    <div class="top">
+      <button class="salir" id="b-salir" type="button" aria-label="Salir del examen">✕</button>
+      <div class="barra"><i style="width:${(r.i / r.preguntas.length) * 100}%"></i></div>
+      <span class="cuenta">${r.i + 1}/${r.preguntas.length}</span>
+    </div>
+    <div class="tipo">${TIPOS[p.t]}${r.clave === "aleatorio" || r.clave === "fallos" ? " · " + esc(p.examen) : ""}</div>
+    ${p.q ? `<p class="enunciado">${esc(p.q)}</p>` : ""}
+    ${p.code ? `<pre class="code">${resaltar(p.code)}</pre>` : ""}
+    <div class="opciones">
+      ${r.opciones.map((o, i) => `<button class="op ${mono ? "mono" : ""}" type="button" data-i="${i}"><span class="letra">${LETRAS[i]}</span><span class="txt">${esc(o.txt)}</span></button>`).join("")}
+    </div>
+    <div id="explica"></div>`;
+  document.getElementById("b-salir").onclick = pintarPortada;
+  $app.querySelectorAll(".op").forEach(b => b.onclick = () => responder(+b.dataset.i));
+  window.scrollTo(0, 0);
+}
+
+function responder(i) {
+  const r = ronda, p = r.preguntas[r.i], elegida = r.opciones[i];
+  const acierto = elegida.ok;
+  if (acierto) { r.aciertos++; fallos.delete(p.id); } else { fallos.add(p.id); }
+  guardarFallos();
+  r.respuestas.push({ p, elegida: elegida.txt, acierto });
+
+  $app.querySelectorAll(".op").forEach((b, j) => {
+    b.disabled = true;
+    const o = r.opciones[j];
+    if (o.ok) b.classList.add("ok");
+    else if (j === i) b.classList.add("mal");
+    else b.classList.add("apagada");
+  });
+  document.getElementById("explica").innerHTML = acierto
+    ? `<div class="explica ok"><b>Correcto</b>${esc(p.exp)}</div>`
+    : `<div class="explica mal">
+         <b>Por qué ${opcionCorta(elegida.txt)} no</b><span class="pq">${esc(p.por[elegida.txt] || "")}</span>
+         <b class="bien-tit">La buena es ${opcionCorta(p.opts[p.a])}</b>${esc(p.exp)}
+       </div>`;
+  document.querySelector(".barra i").style.width = `${((r.i + 1) / r.preguntas.length) * 100}%`;
+
+  const ultima = r.i === r.preguntas.length - 1;
+  $btn.textContent = ultima ? "Ver resultado" : "Siguiente";
+  $btn.onclick = () => { if (ultima) pintarResultado(); else { r.i++; pintarPregunta(); } };
+  $accion.hidden = false;
+  document.getElementById("explica").scrollIntoView({ block: "nearest", behavior: "smooth" });
+}
+
+function pintarResultado() {
+  const r = ronda, n = r.preguntas.length;
+  $accion.hidden = true;
+  if (EXAMENES.some(e => e.id === r.clave)) {
+    mejores[r.clave] = Math.max(mejores[r.clave] ?? 0, r.aciertos);
+    guardar("tren-mejores", mejores);
+  }
+  const nota = r.aciertos / n * 10;
+  const frase = nota >= 9 ? "Esto ya lo tienes." : nota >= 7 ? "Bien. Mira los fallos y repítelo." : nota >= 5 ? "Aprobado justo. Repasa la chuleta de este tema." : "Repasa este tema y vuelve a intentarlo.";
+  const mal = r.respuestas.filter(x => !x.acierto);
+  $app.innerHTML = `
+    <div class="marcador">
+      <div class="eyebrow">${esc(r.titulo)}</div>
+      <div class="grande">${r.aciertos}<small>/${n}</small></div>
+      <p>${frase}</p>
+    </div>
+    <div class="botones">
+      <button type="button" id="b-volver">Volver a la línea</button>
+      <button type="button" class="prim" id="b-otra">${mal.length ? "Repetir los fallos" : "Repetir"}</button>
+    </div>
+    ${mal.map(x => `
+      <div class="fallo">
+        ${x.p.q ? `<p class="enunciado">${esc(x.p.q)}</p>` : ""}
+        ${x.p.code ? `<pre class="code">${resaltar(x.p.code)}</pre>` : ""}
+        <div class="resp">
+          <div class="tu">Tu respuesta: <code>${esc(x.elegida)}</code></div>
+          <div class="por">${esc(x.p.por[x.elegida] || "")}</div>
+          <div class="bien">Correcta: <code>${esc(x.p.opts[x.p.a])}</code></div>
+          <div class="por">${esc(x.p.exp)}</div>
+        </div>
+      </div>`).join("")}`;
+  document.getElementById("b-volver").onclick = pintarPortada;
+  document.getElementById("b-otra").onclick = () =>
+    mal.length ? empezar("fallos", "Repaso de fallos", barajar(mal.map(x => x.p))) : empezar(r.clave, r.titulo, r.preguntas.slice());
+  window.scrollTo(0, 0);
+}
+
+pintarPortada();
+</script>
